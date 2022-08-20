@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.example.org/dmmm"
+            targetNamespace="http://www.example.org/dmmm">    
+    
+    <xsd:simpleType name="XSDDOMAIN">
+        <xsd:union memberTypes="xsd:string xsd:integer xsd:boolean"></xsd:union>
+    </xsd:simpleType>
+
+    <xsd:complexType name="DOMAIN">
+        <xsd:simpleContent>
+            <xsd:extension base="XSDDOMAIN">
+                <xsd:attribute name="identifier" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:element name="KEYATTRIBUTE" type="DOMAIN"/>
+    <xsd:complexType name="IDENTIFIER">
+        <xsd:sequence>
+            <!-- <xsd:element name="identifier_code"></xsd:element>
+            <xsd:element name="identifier_description"></xsd:element> -->
+            <!-- TODO IDENTIFIER to ENTITY (I) -->
+            <!-- IDENTIFIER to KEYATTRIBUTE -->
+            <xsd:element ref="KEYATTRIBUTE" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="identifier_code" type="xsd:string"/>
+        <xsd:attribute name="identifier_description" type="xsd:string"/>
+    </xsd:complexType>
+
+
+    <xsd:element name="IDENTIFIER" type="IDENTIFIER"></xsd:element>
+
+    <xsd:element name="ATTRIBUTE" type="DOMAIN"></xsd:element>
+    <xsd:element name="ENTITYOCCURENCE">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="ATTRIBUTEVALUE" type="XSDDOMAIN" minOccurs="1" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="identifier" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <xsd:complexType name="ENTITY">
+        <xsd:sequence>
+            <!-- ENTITY to IDENTIFIER -->
+            <!-- TODO Should it be extented by ENTITYOCCURENCE? -->
+            <xsd:choice minOccurs="1" maxOccurs="unbounded">
+                <xsd:choice>
+                    <xsd:element ref="FOREIGNIDENTIFIER" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element ref="IDENTIFIER" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:choice>
+                <xsd:element ref="ATTRIBUTE" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:choice>
+            <xsd:element ref="SUBTYPING" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="ENTITYOCCURENCE" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="identifier" type="xsd:string"/>
+        <xsd:attribute name="description" type="xsd:string"/>
+        <xsd:anyAttribute/>
+    </xsd:complexType>
+
+    
+    <xsd:element name="ENTITY" type="ENTITY"></xsd:element>
+
+    <!-- TODO ENTITY to SUBTYPING (I) and (II) -->
+    <!-- TODO ENTITY to DATA MODEL ENTITY -->
+    <!-- TODO Should DATAMODEL be a type and restrict DATAMODEL? -->
+    <!-- TODO Should DATAMODEL extend ENTITY all others need to be extending the ENTITY entity? -->
+    <xsd:element name="DATAMODELENTITY" type="DATAMODELENTITY"></xsd:element>
+    <xsd:complexType name="DATAMODELENTITY">
+        <xsd:complexContent>
+            <xsd:extension base="ENTITY">
+                <xsd:anyAttribute/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DATAMODEL">
+        <xsd:sequence>
+            <xsd:choice minOccurs="1" maxOccurs="unbounded">
+                <xsd:element ref="DATAMODELENTITY" minOccurs="1" maxOccurs="unbounded"/>
+                <xsd:element ref="DATAMODELRELATIONSHIP" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="identifier" type="xsd:string"/>
+        <xsd:attribute name="description" type="xsd:string"/>
+        <xsd:attribute name="owner" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:element name="DATAMODEL" type="DATAMODEL"></xsd:element>
+
+
+    <xsd:complexType name="DATAMODELATTRIBUTE">
+        <xsd:complexContent>
+            <xsd:extension base="DOMAIN"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="DATAMODELATTRIBUTE" type="DATAMODELATTRIBUTE"></xsd:element>
+
+
+    <xsd:element name="SUBTYPECATEGORIZATION" type="SUBTYPECATEGORIZATION"></xsd:element>
+    <xsd:complexType name="SUBTYPECATEGORIZATION">
+        <xsd:complexContent>
+            <xsd:extension base="DOMAIN"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+
+    <xsd:element name="FOREIGNIDENTIFIERATTRIBUTE" type="DOMAIN"/>
+
+    <xsd:element name="FOREIGNIDENTIFIER">
+        <xsd:complexType>
+            <!-- <xsd:complexContent> -->
+                <!-- <xsd:extension base="IDENTIFIER"> -->
+                    <xsd:sequence>
+                        <!-- <xsd:element ref="ATTRIBUTE" minOccurs="0" maxOccurs="0"/> -->
+                        <xsd:element ref="FOREIGNIDENTIFIERATTRIBUTE" minOccurs="1" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                <!-- </xsd:extension> -->
+            <!-- </xsd:complexContent> -->
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <!-- TODO What to do about SUBTYPING? -->
+    <xsd:element name="SUBTYPING">
+        <xsd:complexType>
+            <xsd:sequence>
+                <!-- What to do about SUBTYPECATEGORIZATION to SUBTYPING ? -->
+                <!-- SUBTYPING to SUBTYPE -->
+                <xsd:element ref="SUBTYPECATEGORIZATION" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+                <xsd:element name="supertype" type="ENTITY"></xsd:element>
+                <xsd:element name="subtype" type="ENTITY"></xsd:element>
+                <xsd:element name="description" type="xsd:string"></xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <xsd:element name="DATAMODELRELATIONSHIP">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:restriction base="RELATIONSHIP">
+                    <xsd:attribute name="dominant" type="xsd:string"/>
+                    <xsd:attribute name="dependent" type="xsd:string"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RELATIONSHIP" type="RELATIONSHIP"/>
+    <xsd:complexType name="RELATIONSHIP">
+        <xsd:sequence>
+            <!-- RELATIOSHIP to FOREIGNIDENTIFIER -->
+            <xsd:element ref="FOREIGNIDENTIFIER" minOccurs="1" maxOccurs="1"/>
+
+            <!-- RELATIONSHIP to ENTITY (I) -->
+            <xsd:element name="dominant" type="ENTITY" minOccurs="1" maxOccurs="1"/>
+
+            <!-- RELATIONSHIP to ENTITY (II) -->
+            <xsd:element name="dependent" type="ENTITY" minOccurs="1" maxOccurs="1"/>                
+        </xsd:sequence>
+        <xsd:attribute name="identifier" type="xsd:string"/>
+        <xsd:attribute name="dominant" type="xsd:string"/>
+        <xsd:attribute name="dependent" type="xsd:string"/>
+        <xsd:attribute name="verbal_phrase" type="xsd:string"/>
+        <xsd:attribute name="description" type="xsd:string"/>
+    </xsd:complexType>
+</xsd:schema>
