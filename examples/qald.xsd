@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:dmmm="http://www.example.org/dmmm" 
+    xmlns="http://www.example.org/qald" 
+    targetNamespace="http://www.example.org/qald" 
+    attributeFormDefault="unqualified" 
+    elementFormDefault="qualified">
+
+    <xsd:import schemaLocation="dmmm.xsd" namespace="http://www.example.org/dmmm" />
+
+    <xsd:element name="dataset">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="dmmm:DATAMODEL">
+                    <xsd:sequence>
+                        <xsd:element name="question" minOccurs="1" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:complexContent>
+                                    <xsd:restriction base="dmmm:DATAMODELENTITY">
+                                        <xsd:sequence>
+                                            <xsd:element name="string" minOccurs="1" maxOccurs="unbounded">
+                                                <xsd:complexType>
+                                                    <xsd:complexContent>
+                                                        <xsd:extension base="dmmm:DATAMODELATTRIBUTE">
+                                                            <xsd:attribute name="lang" type="xsd:language"></xsd:attribute>
+                                                        </xsd:extension>
+                                                    </xsd:complexContent>
+                                                </xsd:complexType>
+                                            </xsd:element>
+                                            <xsd:element name="keywords" minOccurs="0" maxOccurs="unbounded">
+                                                <xsd:complexType>
+                                                    <xsd:complexContent>
+                                                        <xsd:extension base="dmmm:DATAMODELATTRIBUTE">
+                                                            <xsd:attribute name="lang" type="xsd:language"></xsd:attribute>
+                                                        </xsd:extension>
+                                                    </xsd:complexContent>
+                                                </xsd:complexType>
+                                            </xsd:element>
+                                            <xsd:element name="query" type="dmmm:DATAMODELATTRIBUTE" minOccurs="0" maxOccurs="1" />
+                                            <xsd:element name="pseudoquery" type="dmmm:DATAMODELATTRIBUTE" minOccurs="0" maxOccurs="1" />
+                                            <xsd:element name="answers">
+                                                <xsd:complexType>
+                                                    <xsd:sequence>
+                                                        <xsd:element name="answer" minOccurs="0" maxOccurs="unbounded">
+                                                            <xsd:complexType mixed="true">
+                                                                <xsd:sequence>
+                                                                    <xsd:choice>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="boolean" type="dmmm:DATAMODELATTRIBUTE" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                                                                            <xsd:element name="number" type="dmmm:DATAMODELATTRIBUTE" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                                                                        </xsd:sequence>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="uri" type="dmmm:DATAMODELATTRIBUTE" minOccurs="0" maxOccurs="unbounded" />
+                                                                            <xsd:element name="string" type="dmmm:DATAMODELATTRIBUTE" minOccurs="0" maxOccurs="1"></xsd:element>
+                                                                            <xsd:element name="date" type="dmmm:DATAMODELATTRIBUTE" minOccurs="0" maxOccurs="1"></xsd:element>
+                                                                        </xsd:sequence>
+                                                                    </xsd:choice>
+                                                                    <xsd:any minOccurs="0" />
+                                                                </xsd:sequence>
+                                                            </xsd:complexType>
+                                                        </xsd:element>
+                                                    </xsd:sequence>
+                                                </xsd:complexType>
+                                            </xsd:element>
+                                        </xsd:sequence>
+                                        <xsd:attribute name="id" type="xsd:string"></xsd:attribute>
+                                        <xsd:attribute name="description" type="xsd:string" default="Question ID"></xsd:attribute>
+                                        <xsd:attribute name="onlydbo" type="xsd:boolean"></xsd:attribute>
+                                        <xsd:attribute name="answertype" type="xsd:string"></xsd:attribute>
+                                        <xsd:attribute name="aggregation" type="xsd:boolean"></xsd:attribute>
+                                        <xsd:attribute name="hybrid" type="xsd:boolean"></xsd:attribute>
+                                    </xsd:restriction>
+                                </xsd:complexContent>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                    <xsd:attribute name="id" type="dmmm:XSDDOMAIN"></xsd:attribute>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
